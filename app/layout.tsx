@@ -9,12 +9,12 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL("https://starter.rasmic.xyz"),
   title: {
-    default: 'Nextjs Starter Kit',
-    template: `%s | Nextjs Starter Kit`
+    default: 'guru catcher 🎣',
+    template: `%s | guru catcher`
   },
   openGraph: {
-    description: 'Build your next SAAS product',
-    images: ['']
+    description: 'verify your stripe revenue claims using guru catcher',
+    images: ['https://utfs.io/f/c5ec1232-6b6c-4ded-9a7c-b48df7b3838a-25z2s0.png']
   },
 }
 export default function RootLayout({

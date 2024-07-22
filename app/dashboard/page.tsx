@@ -19,6 +19,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+interface SalesData {
+  sales7Days: number;
+  sales30Days: number;
+  sales90Days: number;
+  salesAllTime: number;
+  chartData: Array<{ month: string; revenue: number }>;
+  revenueGrowth: number;
+}
+
 const chartConfig = {
   revenue: {
     label: "Revenue",
@@ -41,9 +50,9 @@ const SalesCard = ({ title, amount }: { title: string; amount: number }) => (
 );
 
 export default function Dashboard() {
-  const [salesData, setSalesData] = useState(null);
+  const [salesData, setSalesData] = useState<SalesData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const fetchSalesData = () => {
@@ -96,7 +105,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig}>
-              <BarChart width={800} height={400} data={[0]}>
+              <BarChart width={800} height={400} data={[{ month: '', revenue: 0 }]}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />

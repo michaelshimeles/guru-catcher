@@ -56,6 +56,7 @@ function APIForm() {
           className={error ? 'border-red-500' : ''}
           disabled={isLoading}
         />
+
         {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       </div>
       <Button type="submit" disabled={isLoading}>

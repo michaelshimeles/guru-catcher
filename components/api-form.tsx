@@ -52,7 +52,7 @@ function APIForm() {
         <Input
           type="password"
           {...register("apiKey", { required: true })}
-          placeholder="Stripe Live Secret Key"
+          placeholder="Stripe API Key (READ ONLY) "
           className={error ? 'border-red-500' : ''}
           disabled={isLoading}
         />

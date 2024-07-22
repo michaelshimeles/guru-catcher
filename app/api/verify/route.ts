@@ -4,15 +4,20 @@ import Stripe from 'stripe';
 
 const STRIPE_TIMEOUT = 120000; // 120 seconds
 
-const calculateSales = (transactions: Stripe.BalanceTransaction[], days: number) => {
+const calculateSales = async (stripe: Stripe, days: number) => {
   const now = Math.floor(Date.now() / 1000);
   const startDate = now - (days * 24 * 60 * 60);
-  return transactions
-    .filter(t => t.created >= startDate && t.type === 'charge')
-    .reduce((sum, t) => sum + t.amount, 0) / 100; // Convert from cents to dollars
+
+  const balanceTransactions = await stripe.balanceTransactions.list({
+    limit: 100,
+    created: { gte: startDate },
+    type: 'charge',
+  });
+
+  return balanceTransactions.data.reduce((sum, t) => sum + t.amount, 0) / 100; // Convert from cents to dollars
 };
 
-const calculateMonthlyRevenue = (transactions: Stripe.BalanceTransaction[]) => {
+const calculateMonthlyRevenue = async (stripe: Stripe) => {
   const now = new Date();
   const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
   const monthlyData = Array.from({ length: 6 }, (_, i) => {
@@ -23,13 +28,17 @@ const calculateMonthlyRevenue = (transactions: Stripe.BalanceTransaction[]) => {
     };
   }).reverse();
 
-  transactions.forEach(transaction => {
-    if (transaction.type === 'charge' && transaction.created * 1000 >= sixMonthsAgo.getTime()) {
-      const transactionDate = new Date(transaction.created * 1000);
-      const monthIndex = monthlyData.findIndex(data => data.month === transactionDate.toLocaleString('default', { month: 'long' }));
-      if (monthIndex !== -1) {
-        monthlyData[monthIndex].revenue += transaction.amount / 100; // Convert cents to dollars
-      }
+  const balanceTransactions = await stripe.balanceTransactions.list({
+    limit: 100,
+    created: { gte: Math.floor(sixMonthsAgo.getTime() / 1000) },
+    type: 'charge',
+  });
+
+  balanceTransactions.data.forEach(transaction => {
+    const transactionDate = new Date(transaction.created * 1000);
+    const monthIndex = monthlyData.findIndex(data => data.month === transactionDate.toLocaleString('default', { month: 'long' }));
+    if (monthIndex !== -1) {
+      monthlyData[monthIndex].revenue += transaction.amount / 100; // Convert cents to dollars
     }
   });
 
@@ -40,8 +49,6 @@ export async function POST(request: NextRequest) {
   try {
     const { apiKey } = await request.json();
 
-    console.log('apiKey', apiKey)
-
     if (!apiKey) {
       return NextResponse.json({ error: 'API key is required' }, { status: 400 });
     }
@@ -51,23 +58,26 @@ export async function POST(request: NextRequest) {
       timeout: STRIPE_TIMEOUT,
     });
 
-    const balanceTransactions = await stripe.balanceTransactions.list({
-      limit: 100,
-      expand: ['data.source'],
-    });
+    const [sales7Days, sales30Days, sales90Days, chartData] = await Promise.all([
+      calculateSales(stripe, 7),
+      calculateSales(stripe, 30),
+      calculateSales(stripe, 90),
+      calculateMonthlyRevenue(stripe),
+    ]);
 
-    const revenueData = calculateMonthlyRevenue(balanceTransactions.data);
-    const currentRevenue = revenueData[revenueData.length - 1].revenue;
-    const previousRevenue = revenueData[revenueData.length - 2].revenue;
-    const revenueGrowth = ((currentRevenue - previousRevenue) / previousRevenue) * 100;
+    const salesAllTime = await calculateSales(stripe, 365 * 10); // Assuming 10 years as "all time"
+
+    const currentRevenue = chartData[chartData.length - 1].revenue;
+    const previousRevenue = chartData[chartData.length - 2].revenue;
+    const revenueGrowth = previousRevenue ? ((currentRevenue - previousRevenue) / previousRevenue) * 100 : 0;
 
     const salesData = {
-      sales7Days: calculateSales(balanceTransactions.data, 7),
-      sales30Days: calculateSales(balanceTransactions.data, 30),
-      sales90Days: calculateSales(balanceTransactions.data, 90),
-      salesAllTime: calculateSales(balanceTransactions.data, Infinity),
+      sales7Days,
+      sales30Days,
+      sales90Days,
+      salesAllTime,
       revenueGrowth,
-      chartData: revenueData,
+      chartData,
     };
 
     return NextResponse.json(salesData);
@@ -77,8 +87,9 @@ export async function POST(request: NextRequest) {
     let statusCode = 500;
 
     if (error instanceof Stripe.errors.StripeError) {
-      if (error.type === 'StripeConnectionError') {
-        errorMessage = 'Unable to connect to Stripe. Please check your internet connection and try again.';
+      if (error.type === 'StripePermissionError') {
+        errorMessage = 'The provided API key does not have the required permissions. Please ensure you\'ve created a restricted key with "Read balance transactions" and "Read charges" permissions.';
+        statusCode = 403;
       } else if (error.type === 'StripeAuthenticationError') {
         errorMessage = 'Invalid API key. Please check your Stripe API key and try again.';
         statusCode = 401;

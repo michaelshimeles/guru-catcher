@@ -62,6 +62,19 @@ function APIForm() {
       <Button type="submit" disabled={isLoading}>
         {isLoading ? 'Verifying...' : 'Verify Income'}
       </Button>
+      <div className="text-sm mt-2">
+        <p>Please create a restricted API key with the following permissions:</p>
+        <ul className="list-disc pl-5 mt-1">
+          <li>Read balance transactions</li>
+          <li>Read charges</li>
+        </ul>
+        <a href="https://dashboard.stripe.com/apikeys/create?name=GuruCatcher&permissions%5B%5D=rak_balance_read&permissions%5B%5D=rak_charge_read"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline mt-2 inline-block">
+          Create Restricted API Key
+        </a>
+      </div>
     </form>
   )
 }

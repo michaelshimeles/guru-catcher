@@ -47,7 +47,7 @@ const SalesCard = ({ title, amount }: { title: string; amount: number }) => (
     </CardHeader>
     <CardContent>
       <div className="text-2xl font-bold">
-        ${new Intl.NumberFormat('en-US').format(amount?.toFixed(2))}
+        ${new Intl.NumberFormat('en-US').format(amount)}
       </div>
     </CardContent>
   </Card>
@@ -91,7 +91,6 @@ export default function Dashboard() {
   useEffect(() => {
     fetchSalesData();
   }, []);
-
 
   if (loading) {
     return (

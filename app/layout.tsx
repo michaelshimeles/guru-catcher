@@ -9,7 +9,7 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL("https://starter.rasmic.xyz"),
   title: {
-    default: 'guru catcher 🎣',
+    default: 'guru catcher',
     template: `%s | guru catcher`
   },
   openGraph: {

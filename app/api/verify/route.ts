@@ -58,26 +58,26 @@ export async function POST(request: NextRequest) {
       timeout: STRIPE_TIMEOUT,
     });
 
-    const [sales7Days, sales30Days, sales90Days, chartData] = await Promise.all([
+    const [sales_7_days, sales_30_days, sales_90_days, chart_data] = await Promise.all([
       calculateSales(stripe, 7),
       calculateSales(stripe, 30),
       calculateSales(stripe, 90),
       calculateMonthlyRevenue(stripe),
     ]);
 
-    const salesAllTime = await calculateSales(stripe, 365 * 10); // Assuming 10 years as "all time"
+    const sales_all_days = await calculateSales(stripe, 365 * 10); // Assuming 10 years as "all time"
 
-    const currentRevenue = chartData[chartData.length - 1].revenue;
-    const previousRevenue = chartData[chartData.length - 2].revenue;
+    const currentRevenue = chart_data[chart_data.length - 1].revenue;
+    const previousRevenue = chart_data[chart_data.length - 2].revenue;
     const revenueGrowth = previousRevenue ? ((currentRevenue - previousRevenue) / previousRevenue) * 100 : 0;
 
     const salesData = {
-      sales7Days,
-      sales30Days,
-      sales90Days,
-      salesAllTime,
+      sales_7_days,
+      sales_30_days,
+      sales_90_days,
+      sales_all_days,
       revenueGrowth,
-      chartData,
+      chart_data,
     };
 
     return NextResponse.json(salesData);

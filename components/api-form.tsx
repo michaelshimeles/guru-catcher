@@ -28,12 +28,12 @@ function APIForm() {
 
       if (response.ok) {
         // Store all sales data in cookies
-        document.cookie = `sales_7_days=${result.sales7Days}; path=/; max-age=3600; SameSite=Strict; Secure`;
-        document.cookie = `sales_30_days=${result.sales30Days}; path=/; max-age=3600; SameSite=Strict; Secure`;
-        document.cookie = `sales_90_days=${result.sales90Days}; path=/; max-age=3600; SameSite=Strict; Secure`;
-        document.cookie = `sales_all_time=${result.salesAllTime}; path=/; max-age=3600; SameSite=Strict; Secure`;
-        document.cookie = `chart_data=${JSON.stringify(result.chartData)}; path=/; max-age=3600; SameSite=Strict; Secure`;
-        document.cookie = `revenue_growth=${result.revenueGrowth}; path=/; max-age=3600; SameSite=Strict; Secure`;
+        document.cookie = `sales_7_days=${result.sales_7_days}; path=/; max-age=3600; SameSite=Strict; Secure`;
+        document.cookie = `sales_30_days=${result.sales_30_days}; path=/; max-age=3600; SameSite=Strict; Secure`;
+        document.cookie = `sales_90_days=${result.sales_90_days}; path=/; max-age=3600; SameSite=Strict; Secure`;
+        document.cookie = `sales_all_days=${result.sales_all_days}; path=/; max-age=3600; SameSite=Strict; Secure`;
+        document.cookie = `chart_data=${JSON.stringify(result.chart_data)}; path=/; max-age=3600; SameSite=Strict; Secure`;
+        document.cookie = `revenue_growth=${result.revenue_growth}; path=/; max-age=3600; SameSite=Strict; Secure`;
         router.push('/dashboard');
       } else {
         setError(result.error || 'An error occurred. Please try again.');

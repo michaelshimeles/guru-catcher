@@ -45,7 +45,7 @@ export async function GET() {
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     return NextResponse.json(paymentSchedule);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching payment schedules:', error);
     return NextResponse.json(
       { error: 'Error fetching payment schedules', details: error.message },

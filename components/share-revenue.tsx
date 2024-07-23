@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from "sonner"
+import { Skeleton } from "./ui/skeleton"
 
 function ShareRevenue({
   sales_7_days,
@@ -24,7 +25,7 @@ function ShareRevenue({
   const copylink = (e: any) => {
     navigator.clipboard.writeText(shareUrl)
     toast("Shareable URL has been copied")
-}
+  }
 
   return (
     <Popover>
@@ -49,9 +50,9 @@ function ShareRevenue({
           </p>
         </div>
         <div className='flex gap-1 mt-2'>
-          <Input value={shareUrl} className='text-xs'/>
+          {shareUrl ? <Input value={shareUrl} className='text-xs' /> : <Skeleton className="w-full " />}
           <Button size="icon" variant="outline" onClick={copylink}>
-            <Clipboard className='w-4 h-4'/>
+            <Clipboard className='w-4 h-4' />
           </Button>
         </div>
       </PopoverContent>

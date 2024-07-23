@@ -1,17 +1,7 @@
-"use server";
-
 import { createServerClient } from "@supabase/ssr";
-import { randomUUID } from "crypto";
 import { cookies } from "next/headers";
-import { RevenueData } from "../types";
 
-export const storeRevenue = async ({
-  sales_7_days,
-  sales_30_days,
-  sales_90_days,
-  sales_all_days,
-  chart_data,
-}: RevenueData) => {
+export const getSalesData = async (id: string) => {
   const cookieStore = cookies();
 
   const supabase = createServerClient(
@@ -29,23 +19,13 @@ export const storeRevenue = async ({
   try {
     const { data, error } = await supabase
       .from("revenue")
-      .insert([
-        {
-          sales_7_days,
-          sales_30_days,
-          sales_90_days,
-          sales_all_days,
-          chart_data,
-          url: randomUUID(),
-        },
-      ])
-      .select();
+      .select()
+      .eq("url", id)
 
     if (error?.code) return error;
 
-    return data?.[0]
-
+    return data?.[0];
   } catch (error) {
     return error;
   }
-};
+}

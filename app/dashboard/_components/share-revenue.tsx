@@ -1,17 +1,17 @@
 "use client"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Skeleton } from "@/components/ui/skeleton"
 import { storeRevenue } from '@/utils/actions/store-revenue'
 import { RevenueData } from '@/utils/types'
 import { Clipboard } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
 import { toast } from "sonner"
-import { Skeleton } from "./ui/skeleton"
 
 function ShareRevenue({
   sales_7_days,

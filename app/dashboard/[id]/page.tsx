@@ -5,9 +5,38 @@ import {
   CardTitle
 } from "@/components/ui/card";
 import { DollarSign } from "lucide-react";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import RevenueChart from "../_components/revenue-chart";
+import { getSalesData } from "@/utils/functions/get-sales-data";
+
+
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const salesData = await getSalesData(params?.id)
+
+  if (!salesData) {
+    return {}
+  }
+
+  const ogUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_DOMAIN}/api/og?id={${params?.id}}`)
+
+  return {
+    title: 'Guru Catcher Results',
+    description: "Prove your income claim using gurucatcher and let's see if you real or fake",
+    openGraph: {
+      title: 'Guru Catcher Results',
+      description: "Prove your income claim using gurucatcher and let's see if you real or fake",
+      images: [
+        {
+          url: ogUrl.toString(),
+          width: 1200,
+          height: 630,
+        }
+      ]
+    },
+  }
+}
+
+
 
 const SalesCard = ({ title, amount }: { title: string; amount: number }) => (
   <Card>
@@ -25,34 +54,6 @@ const SalesCard = ({ title, amount }: { title: string; amount: number }) => (
   </Card>
 );
 
-const getSalesData = async (id: string) => {
-  const cookieStore = cookies();
-
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SECRET_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
-
-  try {
-    const { data, error } = await supabase
-      .from("revenue")
-      .select()
-      .eq("url", id)
-
-    if (error?.code) return error;
-
-    return data?.[0];
-  } catch (error) {
-    return error;
-  }
-}
 
 export default async function Dashboard({ params }: { params: { id: string } }) {
 

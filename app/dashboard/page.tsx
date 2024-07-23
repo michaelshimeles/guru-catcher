@@ -92,6 +92,7 @@ export default function Dashboard() {
     fetchSalesData();
   }, []);
 
+
   if (loading) {
     return (
       <div className='flex flex-col justify-center items-start flex-wrap px-4 pt-4 gap-4'>
@@ -100,12 +101,12 @@ export default function Dashboard() {
           <p className="text-sm text-gray-400">Data directly from stripe.com</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-          <SalesCard title="Sales (7 Days)" amount={0} />
-          <SalesCard title="Sales (30 Days)" amount={0} />
-          <SalesCard title="Sales (90 Days)" amount={0} />
-          <SalesCard title="Sales (All Time)" amount={0} />
+          <SalesCard title="Revenue (7 Days)" amount={0} />
+          <SalesCard title="Revenue (30 Days)" amount={0} />
+          <SalesCard title="Revenue (90 Days)" amount={0} />
+          <SalesCard title="Revenue (All Time)" amount={0} />
         </div>
-        <Card className="min-w-[800px] mt-3">
+        <Card className="min-w-[800px]">
           <CardHeader>
             <CardTitle>Monthly Revenue</CardTitle>
             <CardDescription>Last 6 Months</CardDescription>

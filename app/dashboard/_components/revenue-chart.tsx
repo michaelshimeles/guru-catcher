@@ -23,7 +23,7 @@ const chartConfig = {
 const RevenueChart = ({ salesData }: any) => {
 
   return (
-    <Card className="max-w-[800px] w-full mt-3">
+    <Card className="max-w-[800px] w-full">
       <CardHeader>
         <CardTitle>Monthly Revenue</CardTitle>
         <CardDescription>Last 6 Months</CardDescription>

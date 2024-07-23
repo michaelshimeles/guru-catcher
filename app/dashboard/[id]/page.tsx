@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     return {}
   }
 
-  const ogUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_DOMAIN}/api/og?id={${params?.id}}`)
+  const ogUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_DOMAIN}/api/og?id=${params?.id}`)
 
   return {
     title: 'Guru Catcher Results',

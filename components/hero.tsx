@@ -1,4 +1,6 @@
+import Link from "next/link"
 import APIForm from "./api-form"
+import { Button } from "./ui/button"
 
 export function Hero() {
   return (

@@ -64,11 +64,11 @@ function APIForm() {
         <Button type="submit" disabled={isLoading}>
           {isLoading ? 'Verifying...' : 'Verify Income'}
         </Button>
-        <Link href="https://guru.rasmic.xyz/dashboard/99f23ca6-cb7a-4313-891b-c97ffa23ffc8" target="_blank">
+        {/* <Link href="https://guru.rasmic.xyz/dashboard/99f23ca6-cb7a-4313-891b-c97ffa23ffc8" target="_blank">
           <Button variant="outline" type="button">
             Sample Data
           </Button>
-        </Link>
+        </Link> */}
       </div>
       <div className="text-sm mt-2">
         <p>Please create a restricted API key with the following permissions:</p>
